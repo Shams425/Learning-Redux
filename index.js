@@ -1,3 +1,7 @@
+//making the store
+const redux = require("redux");
+const createStore = redux.createStore;
+
 //Whole application state
 const initialState = {
   numOfCakes: 10,
@@ -37,3 +41,19 @@ const reducer = (state = initialState, action) => {
       return state; // in case there was no action return a state as it's
   }
 };
+
+//the store
+const store = createStore(reducer);
+//the store handles getState(), subscribe(listeners), dispatch(actions), unsubscribe methods to mange the state
+
+console.log("initial State", store.getState());
+
+const unsubscribe = store.subscribe(() =>
+  console.log("update state", store.getState())
+);
+
+store.dispatch(buyCake());
+store.dispatch(buyCake());
+store.dispatch(buyCake());
+
+unsubscribe();
