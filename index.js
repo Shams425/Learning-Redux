@@ -1,7 +1,11 @@
 //making the store
 const redux = require("redux");
+const reduxLogger = require("redux-logger");
+
 const createStore = redux.createStore;
 const combineReducers = redux.combineReducers;
+const applyMiddleware = redux.applyMiddleware;
+const logger = reduxLogger.createLogger();
 
 //Whole application state
 //let say we expand our cake store so it's now sallying ice-cream and for each part it has it's own state
@@ -79,15 +83,14 @@ const rootReducer = combineReducers({
   iceCream: iceCreamReducer,
 });
 
+//apply the middleware concept by using the applyMiddleware function, and pass it to the store
 //creating the store
-const store = createStore(rootReducer);
-//the store handles getState(), subscribe(listeners), dispatch(actions), unsubscribe methods to mange the state
+const store = createStore(rootReducer, applyMiddleware(logger));
+//the store offers getState(), subscribe(listeners), dispatch(actions), unsubscribe methods to mange the state
 
 console.log("initial State", store.getState());
 
-const unsubscribe = store.subscribe(() =>
-  console.log("update state", store.getState())
-);
+const unsubscribe = store.subscribe(() => {});
 
 store.dispatch(buyCake());
 store.dispatch(buyCake());
