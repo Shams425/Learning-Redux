@@ -1,10 +1,21 @@
 //making the store
 const redux = require("redux");
 const createStore = redux.createStore;
+const combineReducers = redux.combineReducers;
 
 //Whole application state
-const initialState = {
+//let say we expand our cake store so it's now sallying ice-cream and for each part it has it's own state
+// const initialState = {
+//   numOfCakes: 10,
+// };
+
+//we want every state individually
+const initialCakeState = {
   numOfCakes: 10,
+};
+
+const initialIceCream = {
+  numOfIceCreams: 20,
 };
 
 /**
@@ -15,6 +26,7 @@ const initialState = {
 **/
 //action name
 const BUY_CAKE = "BUY_CAKE";
+const BUY_ICECREAM = "BUY_ICECREAM";
 
 //making an action creator
 function buyCake() {
@@ -24,12 +36,18 @@ function buyCake() {
   };
 }
 
+function buyIceCream() {
+  return {
+    type: BUY_ICECREAM,
+  };
+}
+
 /**
  making the reducer in Redux : 
  * make a function that accepts a previous state & action as arguments and returns a new state
 **/
 
-const reducer = (state = initialState, action) => {
+const cakeReducer = (state = initialCakeState, action) => {
   switch (action.type) {
     case BUY_CAKE:
       return {
@@ -42,8 +60,27 @@ const reducer = (state = initialState, action) => {
   }
 };
 
-//the store
-const store = createStore(reducer);
+const iceCreamReducer = (state = initialIceCream, action) => {
+  switch (action.type) {
+    case BUY_ICECREAM:
+      return {
+        ...state,
+        numOfIceCreams: state.numOfIceCreams - 1,
+      };
+
+    default:
+      return state; // in case there was no action return a state as it's
+  }
+};
+
+//we combine every reducer before creating the store and assign it to rootReducer variable
+const rootReducer = combineReducers({
+  cake: cakeReducer,
+  iceCream: iceCreamReducer,
+});
+
+//creating the store
+const store = createStore(rootReducer);
 //the store handles getState(), subscribe(listeners), dispatch(actions), unsubscribe methods to mange the state
 
 console.log("initial State", store.getState());
@@ -55,5 +92,7 @@ const unsubscribe = store.subscribe(() =>
 store.dispatch(buyCake());
 store.dispatch(buyCake());
 store.dispatch(buyCake());
+store.dispatch(buyIceCream());
+store.dispatch(buyIceCream());
 
 unsubscribe();
